@@ -36,4 +36,6 @@ Restart your Obsidian app and enable in Settings -> Community Plugins
 
 Then in settings, look near the bottom where your plugins are and put your api key and desired writeup author name in the settings.
 
-Get your HackTheBox api key from https://app.hackthebox.com/profile/settings
+Get your HackTheBox api key from https://app.hackthebox.com/profile/settings 
+
+**CREATE AN APP TOKEN** - _NOT YOUR HTB IDENTIFIER_
