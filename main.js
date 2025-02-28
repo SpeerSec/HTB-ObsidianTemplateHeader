@@ -57,10 +57,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
     
-            // Log full response
             console.log("Full API Response:", response.json);
     
-            // Corrected path to challenges
             const challenges = response.json.challenges;
     
             if (!Array.isArray(challenges)) {
@@ -69,7 +67,6 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 return;
             }
     
-            // Find the challenge matching the current file name
             const challenge = challenges.find((c) => c.name.toLowerCase() === file.basename.toLowerCase());
     
             if (!challenge) {
@@ -104,10 +101,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
     
-            // Log full response
             console.log("Full API Response:", response.json);
     
-            // Corrected path to challenges
             const challenges = response.json.challenges;
     
             if (!Array.isArray(challenges)) {
@@ -116,7 +111,6 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 return;
             }
     
-            // Find the challenge matching the current file name
             const challenge = challenges.find((c) => c.name.toLowerCase() === file.basename.toLowerCase());
     
             if (!challenge) {
@@ -446,7 +440,6 @@ async fetchMachineTags(machineId) {
 
             const formattedTag = `#HTB-${processedTag.replace(/\s+/g, '-')}`;
 
-            // Map using the *original* tag name to determine category/area/vulnerability
             const tagType = tagMapping[originalTag];
 
             if (tagType === "Category") {
@@ -483,10 +476,8 @@ async insertMachineDetails(editor, machine) {
     const difficulty = `${machine.difficultyText} [${machine.static_points}]`;
     const writeupAuthor = this.settings.writeupAuthor || "a hooman, not a cat";
     const avatarMarkdown = `![Machine Avatar](${avatarUrl})`;
-    
-    // Fetch tags (which will return categories, areas, vulnerabilities)
     const tags = await this.fetchMachineTags(machine.id);
-
+    
     const machineTable = `
 | ${avatarMarkdown}| <div style='text-align: center; font-size: 2em;'>${machineLink}</div><br/><div style='text-align: center; font-size: 0.9em;'>Write up written by **${writeupAuthor}**</div> |
 |-----------------|----------------|
