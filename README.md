@@ -4,6 +4,11 @@ A template header for HackTheBox writeups in obisidian. Simply name your note to
 
 **Note**: _Make sure to use the specific Active or Retired command for the relevant note._
 
+_If there are any features you can think of adding let me know please :)_
+
+### To do
+- Sort retired machine tags to not break when there's a symbol in it
+
 ## Features
 
 Can get both challenges and machines, split between retired and active.
