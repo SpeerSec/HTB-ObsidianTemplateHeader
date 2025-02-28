@@ -161,7 +161,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
             downloadCell = `[Download Files](${downloadUrl})`;
         }
     
-        const avatarMarkdown = `<p align="center"><img src="https://app.hackthebox.com/images/icons/ic-challenge-categ/ic-reversing.svg" width="80" height="80"></p>`;
+        const avatarMarkdown = `<p align="center"><img src="${avatarUrl}" width="80" height="80"></p>`;
     
         const challengeTable = `
 | ${avatarMarkdown} | <div style='text-align: center; font-size: 2em;'>${challengeLink}</div><br/><div style='text-align: center; font-size: 0.9em;'>Write up written by **${writeupAuthor}**</div> |
