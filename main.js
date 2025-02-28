@@ -157,7 +157,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
     
         let downloadCell = "No Files to Download";
         if (challengeInfo.download === true) {
-            const downloadUrl = `https://www.hackthebox.com/api/v4/challenge/download/${challenge.id}`;
+            const downloadUrl = `https://app.hackthebox.com/challenges/${challenge.id}`;
             downloadCell = `[Download Files](${downloadUrl})`;
         }
     
