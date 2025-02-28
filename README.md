@@ -14,13 +14,17 @@ _If there are any features you can think of adding let me know please :)_
 Can get both challenges and machines, split between retired and active.
 
 ### Active Machine
-![image](https://github.com/user-attachments/assets/86ab13cd-5c7e-47a1-9892-f3a3feec20dc)
+![image](https://github.com/user-attachments/assets/8e030168-240c-4fef-989e-e8d48fd69642)
+
 
 ### Retired Machine
-![image](https://github.com/user-attachments/assets/4d78a535-6718-4b20-8b7a-251a4a8037df)
+![image](https://github.com/user-attachments/assets/3a597827-d533-4def-9f89-5bc4b3403b25)
+
 
 ### Challenge
 ![image](https://github.com/user-attachments/assets/6aa27ba8-e70d-40a1-b3d0-73fde317698b)
+
+![image](https://github.com/user-attachments/assets/50b46f5a-04c5-4155-ab6c-1aeea27f8cc1)
 
 
 # Installation
