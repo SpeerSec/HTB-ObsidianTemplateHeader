@@ -2,7 +2,7 @@
 /* 
 HackTheBox Writeup Header generator.
 
-Made by Speer. v0.1.6
+Made by Speer. Enjoy. Check Back for updates.
 
 */
 
