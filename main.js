@@ -57,10 +57,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
     
-            // Log full response
             console.log("Full API Response:", response.json);
     
-            // Corrected path to challenges
             const challenges = response.json.challenges;
     
             if (!Array.isArray(challenges)) {
@@ -69,7 +67,6 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 return;
             }
     
-            // Find the challenge matching the current file name
             const challenge = challenges.find((c) => c.name.toLowerCase() === file.basename.toLowerCase());
     
             if (!challenge) {
@@ -104,10 +101,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
     
-            // Log full response
             console.log("Full API Response:", response.json);
     
-            // Corrected path to challenges
             const challenges = response.json.challenges;
     
             if (!Array.isArray(challenges)) {
@@ -116,7 +111,6 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 return;
             }
     
-            // Find the challenge matching the current file name
             const challenge = challenges.find((c) => c.name.toLowerCase() === file.basename.toLowerCase());
     
             if (!challenge) {
