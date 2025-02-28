@@ -1,0 +1,10 @@
+{
+    "id": "htb-template-generator",
+    "name": "HTB-TG",
+    "version": "0.1.5",
+    "minAppVersion": "1.8.7",
+    "description": "Generates a HackTheBox template header table based on the note name. Retired Machines can take a few seconds to fill in.",
+    "author": "Speer",
+    "authorUrl": "https://github.com/SpeerSec",
+    "isDesktopOnly": false
+}
