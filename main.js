@@ -196,7 +196,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
         const points = challengeInfo.points;
         const description = challengeInfo.description;
         const writeupAuthor = this.settings.writeupAuthor || "a hooman, not a cat";
-    
+
         let downloadCell = "No Files to Download";
         if (challengeInfo.download === true) {
             const downloadTrue = "Zip file available to download.";
@@ -331,6 +331,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 const machine = machines.find((m) => m.name.toLowerCase() === file.basename.toLowerCase());
 
                 if (machine) {
+                    // all the debugging makes me want to throw my keyboard - speer
                     console.log("Retired Machine found:", machine);
                     this.insertMachineDetails(editor, machine);
                     return;
