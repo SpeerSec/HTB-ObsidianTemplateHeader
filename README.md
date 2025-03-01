@@ -6,25 +6,25 @@ A template header for HackTheBox writeups in obisidian. Simply name your note to
 
 _If there are any features you can think of adding let me know please :)_
 
-### To do
-- Sort retired machine tags to not break when there's a symbol in it
+
 
 ## Features
 
 Can get both challenges and machines, split between retired and active.
 
-### Active Machine
-![image](https://github.com/user-attachments/assets/8e030168-240c-4fef-989e-e8d48fd69642)
+New Feature, There is a command to copy the curl command to clipboard after putting in a challenge note that requires files. Put in the header first, a notification will prompt to let you know you can run the copy curl command to put in your terminal to download the zip.
 
+### Active Machine
+![image](https://github.com/user-attachments/assets/ffaaf1e7-3e1e-47b5-a5dd-8b505298c19e)
 
 ### Retired Machine
-![image](https://github.com/user-attachments/assets/3a597827-d533-4def-9f89-5bc4b3403b25)
-
+![image](https://github.com/user-attachments/assets/24624cd5-1777-433d-b31e-4279f758951f)
 
 ### Challenge
-![image](https://github.com/user-attachments/assets/6aa27ba8-e70d-40a1-b3d0-73fde317698b)
+![image](https://github.com/user-attachments/assets/3beb41d9-ff2a-4183-9870-be265124e09b)
 
-![image](https://github.com/user-attachments/assets/50b46f5a-04c5-4155-ab6c-1aeea27f8cc1)
+![image](https://github.com/user-attachments/assets/c37a9269-d946-4693-9700-1c378e03b665)
+
 
 
 # Installation
