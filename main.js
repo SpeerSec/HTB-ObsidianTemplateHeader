@@ -244,7 +244,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
             'Very Easy': 'rgb(160, 0, 255)',
             'Easy': 'rgb(159, 239, 0)',
             'Medium': 'rgb(255, 175, 0)',
-            'Hard': 'rgb(254, 0, 0)',
+            'Hard': 'rgb(247, 0, 0)',
             'Insane': 'rgb(164, 177, 205)'
         }[challengeInfo.difficulty] || 'rgb(255, 255, 255)';
     
@@ -631,7 +631,7 @@ async insertMachineDetails(editor, machine) {
     const difficultyColor = {
         'Easy': 'rgb(159, 239, 0)',
         'Medium': 'rgb(255, 175, 0)',
-        'Hard': 'rgb(254, 0, 0)',
+        'Hard': 'rgb(247, 0, 0)',
         'Insane': 'rgb(164, 177, 205)'
     }[machine.difficultyText] || 'rgb(255, 255, 255)';
 
