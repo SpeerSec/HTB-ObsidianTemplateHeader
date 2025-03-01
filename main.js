@@ -2,7 +2,7 @@
 /* 
 HackTheBox Writeup Header generator.
 
-Made by Speer. Enjoy. Check Back for updates.
+Made by Speer. v0.1.8
 
 */
 
@@ -39,6 +39,49 @@ module.exports = class HTBTemplateGenerator extends Plugin {
             name: "Challenge:Active",
             editorCallback: (editor, view) => this.fetchChallenge(editor, view.file),
         });
+        this.addCommand({
+            id: "copy-challenge-download-curl",
+            name: "Copy Challenge Zip command",
+            checkCallback: (checking) => {
+                const activeFile = this.app.workspace.getActiveFile();
+                if (!activeFile) {
+                    return false;
+                }
+        
+                if (checking) return true;
+        
+                // Read the file contents to find the challenge link
+                this.app.vault.read(activeFile).then(content => {
+                    const match = content.match(/\[.*?\]\(https:\/\/app\.hackthebox\.com\/challenges\/(\d+)\)/);
+        
+                    if (!match || match.length < 2) {
+                        new Notice("No valid challenge link found in the current note.");
+                        return;
+                    }
+        
+                    const challengeId = match[1];
+                    const apiToken = this.settings.apiToken;
+        
+                    if (!apiToken) {
+                        new Notice("API Token is missing in plugin settings.");
+                        return;
+                    }
+        
+                    const curlCommand = `curl 'https://www.hackthebox.com/api/v4/challenge/download/${challengeId}' -H 'Authorization: Bearer ${apiToken}' -o challenge.zip && unzip challenge.zip`;
+        
+                    navigator.clipboard.writeText(curlCommand).then(() => {
+                        new Notice("Curl command copied to clipboard! Password is hackthebox");
+                    }).catch(err => {
+                        console.error("Failed to copy curl command:", err);
+                        new Notice("Failed to copy to clipboard.");
+                    });
+                });
+        
+                return true;
+            }
+        });
+        
+        
     }
 
     async fetchChallenge(editor, file) {
@@ -57,6 +100,7 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
     
+            // Log full response
             console.log("Full API Response:", response.json);
     
             const challenges = response.json.challenges;
@@ -100,9 +144,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
                 url: apiUrl,
                 headers: { Authorization: `Bearer ${this.settings.apiToken}` },
             });
-    
+
             console.log("Full API Response:", response.json);
-    
             const challenges = response.json.challenges;
     
             if (!Array.isArray(challenges)) {
@@ -151,31 +194,79 @@ module.exports = class HTBTemplateGenerator extends Plugin {
         const [year, month, day] = releaseDateISO.split("-");
         const releaseDate = `${day}-${month}-${year}`;
         const points = challengeInfo.points;
-        const difficulty = `${challengeInfo.difficulty} [${points}]`;
         const description = challengeInfo.description;
         const writeupAuthor = this.settings.writeupAuthor || "a hooman, not a cat";
     
         let downloadCell = "No Files to Download";
         if (challengeInfo.download === true) {
-            const downloadUrl = `https://www.hackthebox.com/api/v4/challenge/download/${challenge.id}`;
-            downloadCell = `[Download Files](${downloadUrl})`;
+            const downloadTrue = "Zip file available to download.";
+            const downloadPass = "Password: `hackthebox`"
+            new Notice("Run the copy command and paste in your terminal to download the zip!");
+            const downloadName = challenge.name.replace(/\s+/g, '%2520')
+            downloadCell = `[${downloadTrue}](https://app.hackthebox.com/challenges/${downloadName}) ${downloadPass}.`;
         }
     
-        const avatarMarkdown = `<p align="center"><img src="${avatarUrl}" width="80" height="80"></p>`;
+        const avatarMarkdown = `<p align="center"><img src="${avatarUrl}" width="150"></p>`;
+
+        function getSegmentedRatingBar(stars) {
+            if (stars === null || stars === undefined) {
+                return "No rating assigned";
+            }
+        
+            const totalSegments = 5;
+            const fullSegments = Math.floor(stars);          
+            const partialFill = (stars % 1);
+        
+            let segmentsHTML = '<div style="display: flex; align-items: center; width: 100%;">';
+            segmentsHTML += `<div style="margin-right: 10px; font-weight: bold; font-size: 0.9em; white-space: nowrap;">${stars} / 5.0  </div>`;
+        
+            segmentsHTML += `<div style="display: flex; gap: 3px; width: 85%;">`;
+        
+            for (let i = 0; i < totalSegments; i++) {
+                if (i < fullSegments) {
+                    segmentsHTML += `<div style="flex: 1; height: 20px; background-color: rgb(116, 174, 0); border-radius: 10px; border: 4px solid rgb(38, 49, 67);"></div>`;
+                } else if (i === fullSegments && partialFill > 0) {
+                    segmentsHTML += `<div style="flex: 1; height: 20px; position: relative; border-radius: 10px; overflow: hidden; border: 4px solid rgb(38, 49, 67);"><div style="position: absolute; top: 0; left: 0; height: 100%; width: ${partialFill * 100}%; background-color: rgb(116, 174, 0);"></div><div style="position: absolute; top: 0; left: ${partialFill * 100}%; height: 100%; width: ${100 - (partialFill * 100)}%; background-color: rgb(17, 25, 39);"></div></div>`;
+                } else {
+                    segmentsHTML += `<div style="flex: 1; height: 20px; background-color: rgb(17, 25, 39); border-radius: 10px; border: 4px solid rgb(38, 49, 67);"></div>`;
+                }
+            }
+        
+            segmentsHTML += `</div>`;
+            segmentsHTML += `</div>`;
+        
+            return segmentsHTML;
+        }
+        
+        const ratingHTML = getSegmentedRatingBar(challengeInfo.stars);
+
+        const difficultyColor = {
+            'Very Easy': 'rgb(160, 0, 255)',
+            'Easy': 'rgb(159, 239, 0)',
+            'Medium': 'rgb(255, 175, 0)',
+            'Hard': 'rgb(255, 61, 74)',
+            'Insane': 'rgb(164, 177, 205)'
+        }[challengeInfo.difficulty] || 'rgb(255, 255, 255)';
     
+        const difficulty = `<span style='color:${difficultyColor}; font-weight:bold;'>${challengeInfo.difficulty} [${points}]</span>`;
+    
+
         const challengeTable = `
 | ${avatarMarkdown} | <div style='text-align: center; font-size: 2em;'>${challengeLink}</div><br/><div style='text-align: center; font-size: 0.9em;'>Write up written by **${writeupAuthor}**</div> |
 |-----------------|----------------|
 | **Release Date** | ${releaseDate} |
 | **Category** | ${challengeInfo.category_name} |
 | **Difficulty** | ${difficulty} |
-| **Download Files** | ${downloadCell} |
+| **Rating** | ${ratingHTML} |
+| **Files** | ${downloadCell} |
 | **Description** | _${description}_ |
+
 ---
 
     `;
     
         editor.replaceSelection("\n" + challengeTable.trim() + "\n");
+        
     }
     
     async loadSettings() {
@@ -253,8 +344,8 @@ module.exports = class HTBTemplateGenerator extends Plugin {
     }
 
 
-
-async fetchMachineTags(machineId) {
+// Commented out this so people can put own tags. Old feature, may bring back if HTB add tags after Feb 2024.
+/*async fetchMachineTags(machineId) {
     const tagsUrl = `https://www.hackthebox.com/api/v4/machine/tags/${machineId}`;
     try {
         const response = await requestUrl({
@@ -437,7 +528,7 @@ async fetchMachineTags(machineId) {
                     processedTag = insideParens;
                 }
             }
-
+            processedTag = processedTag.replace(/&/g, 'and');
             const formattedTag = `#HTB-${processedTag.replace(/\s+/g, '-')}`;
 
             const tagType = tagMapping[originalTag];
@@ -464,37 +555,102 @@ async fetchMachineTags(machineId) {
             vulnerabilities: "Not yet assigned." 
         };
     }
+}*/
+
+async fetchMachineInfo(machineId) {
+    if (!this.settings.apiToken) {
+        console.log("API Token is not set");
+        return null;
+    }
+    
+    const apiUrl = `https://www.hackthebox.com/api/v4/machine/profile/${machineId}`;
+    try {
+        const response = await requestUrl({
+            url: apiUrl,
+            headers: { Authorization: `Bearer ${this.settings.apiToken}` },
+        });
+        return response.json.info;
+    } catch (error) {
+        console.error("Error fetching machine info:", error);
+        return null;
+    }
 }
 
 async insertMachineDetails(editor, machine) {
+    if (!machine.id) {
+        console.error("Machine ID is missing:", machine);
+        editor.replaceSelection(`\n> Error: No ID found for machine **${machine.name}**\n`);
+        return;
+    }
+
+    const machineInfo = await this.fetchMachineInfo(machine.id);
+    if (!machineInfo) {
+        console.error("Machine details not retrieved:", machine);
+        editor.replaceSelection(`\n> Error fetching machine details for **${machine.name}**\n`);
+        return;
+    }
+
     const avatarUrl = `https://labs.hackthebox.com${machine.avatar}`;
     const machineLink = `[${machine.name}](https://app.hackthebox.com/machines/${machine.name})`;
     const releaseDateISO = machine.release.split("T")[0];
     const [year, month, day] = releaseDateISO.split("-");
     const releaseDate = `${day}-${month}-${year}`;
     const os = machine.os;
-    const difficulty = `${machine.difficultyText} [${machine.static_points}]`;
     const writeupAuthor = this.settings.writeupAuthor || "a hooman, not a cat";
-    const avatarMarkdown = `![Machine Avatar](${avatarUrl})`;
-    const tags = await this.fetchMachineTags(machine.id);
-    
+    const avatarMarkdown = `<img src="${avatarUrl}" width="200">`;
+
+    function getSegmentedRatingBar(stars) {
+        if (!stars) return "No rating assigned";
+        
+        const totalSegments = 5;
+        const fullSegments = Math.floor(stars);
+        const partialFill = (stars % 1);
+        
+        let segmentsHTML = '<div style="display: flex; align-items: center; width: 100%;">';
+        segmentsHTML += `<div style="margin-right: 10px; font-weight: bold; font-size: 0.9em; white-space: nowrap;">${stars} / 5.0</div>`;
+        segmentsHTML += `<div style="display: flex; gap: 3px; width: 85%;">`;
+        
+        for (let i = 0; i < totalSegments; i++) {
+            if (i < fullSegments) {
+                segmentsHTML += `<div style="flex: 1; height: 20px; background-color: rgb(116, 174, 0); border-radius: 10px; border: 4px solid rgb(38, 49, 67);"></div>`;
+            } else if (i === fullSegments && partialFill > 0) {
+                segmentsHTML += `<div style="flex: 1; height: 20px; position: relative; border-radius: 10px; overflow: hidden; border: 4px solid rgb(38, 49, 67);"><div style="position: absolute; top: 0; left: 0; height: 100%; width: ${partialFill * 100}%; background-color: rgb(116, 174, 0);"></div><div style="position: absolute; top: 0; left: ${partialFill * 100}%; height: 100%; width: ${100 - (partialFill * 100)}%; background-color: rgb(17, 25, 39);"></div></div>`;
+            } else {
+                segmentsHTML += `<div style="flex: 1; height: 20px; background-color: rgb(17, 25, 39); border-radius: 10px; border: 4px solid rgb(38, 49, 67);"></div>`;
+            }
+        }
+        segmentsHTML += `</div>`;
+        segmentsHTML += `</div>`;
+        
+        return segmentsHTML;
+    }
+
+    const ratingHTML = getSegmentedRatingBar(machineInfo.stars);
+
+    const difficultyColor = {
+        'Easy': 'rgb(159, 239, 0)',
+        'Medium': 'rgb(255, 175, 0)',
+        'Hard': 'rgb(255, 61, 74)',
+        'Insane': 'rgb(164, 177, 205)'
+    }[machine.difficultyText] || 'rgb(255, 255, 255)';
+
+    const difficulty = `<span style='color:${difficultyColor}; font-weight:bold;'>${machine.difficultyText} [${machine.static_points}]</span>`;
+
     const machineTable = `
-| ${avatarMarkdown}| <div style='text-align: center; font-size: 2em;'>${machineLink}</div><br/><div style='text-align: center; font-size: 0.9em;'>Write up written by **${writeupAuthor}**</div> |
+| ${avatarMarkdown} | <div style='text-align: center; font-size: 2em;'>${machineLink}</div><br/><div style='text-align: center; font-size: 0.9em;'>Write up written by **${writeupAuthor}**</div> |
 |-----------------|----------------|
+| **Box IP** |  |
 | **Release Date** | ${releaseDate} |
 | **OS** | ${os} |
 | **Difficulty** | ${difficulty} |
-| **Box IP** |  |
-| **Primary Learning Category** | ${tags.categories} |
-| **Key Areas of Interest** | ${tags.areas} |
-| **Main Vulnerabilities** | ${tags.vulnerabilities} |
----
+| **Public Rating** | ${ratingHTML} |
+| **Custom Tags** |  |
 
+---
 `;
 
     editor.replaceSelection("\n" + machineTable.trim() + "\n");
-    }
-
+}
 
     async loadSettings() {
         this.settings = Object.assign({ apiToken: "", writeupAuthor: "" }, await this.loadData());
