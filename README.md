@@ -14,6 +14,13 @@ Can get both challenges and machines, split between retired and active.
 
 New Feature, There is a command to copy the curl command to clipboard after putting in a challenge note that requires files. Put in the header first, a notification will prompt to let you know you can run the copy curl command to put in your terminal to download the zip.
 
+Feel free to drop me a message on requested features.
+
+### To do
+
+- Create a more customtsable settings to allow custom list of row information about the machine/challenge and user profiles.
+- Figure out a decent way to display ProLab headers
+
 ### Active Machine
 ![image](https://github.com/user-attachments/assets/ffaaf1e7-3e1e-47b5-a5dd-8b505298c19e)
 
