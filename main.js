@@ -591,7 +591,7 @@ async insertMachineDetails(editor, machine) {
         return;
     }
 
-    const avatarUrl = `https://labs.hackthebox.com${machine.avatar}`;
+    const avatarUrl = `https://labs.hackthebox.com/storage/${machine.avatar}`;
     const machineLink = `[${machine.name}](https://app.hackthebox.com/machines/${machine.name})`;
     const releaseDateISO = machine.release.split("T")[0];
     const [year, month, day] = releaseDateISO.split("-");
